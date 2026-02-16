@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haley's Schedule — Monday Feb 16</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            color: #333;
+            line-height: 1.4;
+        }
+        .header { 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            text-align: center; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .header h1 { 
+            margin: 0 0 8px 0; 
+            font-size: 24px; 
+            font-weight: 600;
+        }
+        .header p { 
+            margin: 0; 
+            opacity: 0.9; 
+            font-size: 16px;
+        }
+        .section { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 16px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #ddd;
+        }
+        .must-do { border-left-color: #e74c3c; }
+        .quick-wins { border-left-color: #3498db; }
+        
+        .section-title { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 16px; 
+            color: #2c3e50;
+        }
+        .task { 
+            display: flex; 
+            align-items: flex-start; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #f1f2f3;
+        }
+        .task:last-child { border-bottom: none; }
+        
+        input[type="checkbox"] { 
+            width: 20px; 
+            height: 20px; 
+            margin-right: 12px; 
+            margin-top: 2px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .task-content { flex: 1; }
+        .task-title { 
+            font-weight: 600; 
+            color: #2c3e50; 
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+        .task-details { 
+            font-size: 14px; 
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .progress-bar { 
+            background: #ecf0f1; 
+            height: 12px; 
+            border-radius: 6px; 
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill { 
+            background: linear-gradient(90deg, #2ecc71, #27ae60); 
+            height: 100%; 
+            border-radius: 6px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        .progress-text { 
+            font-size: 16px; 
+            font-weight: 600;
+            color: #2c3e50; 
+            margin-top: 10px;
+        }
+        
+        .completed { 
+            opacity: 0.6; 
+            text-decoration: line-through; 
+        }
+        
+        .status {
+            background: #e8f6f3;
+            border: 2px solid #1abc9c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .section, .header, .progress-container, .footer { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 Haley's Schedule — CLOUD SYNC</h1>
+        <p>Monday, February 16, 2026 — Evening tasks</p>
+    </div>
+
+    <div class="status" id="connectionStatus">
+        🌐 Using cloud sync for progress tracking...
+    </div>
+
+    <div class="section must-do">
+        <div class="section-title">🔴 Still Need To Do Tonight</div>
+        
+        <div class="task">
+            <input type="checkbox" id="admin" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Light evening admin</div>
+                <div class="task-details">20 min — Quick email scan, prep for Tuesday billing</div>
+            </div>
+        </div>
+        
+        <div class="task">
+            <input type="checkbox" id="climbing-recovery" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Post-climbing recovery</div>
+                <div class="task-details">Stretch, hydrate, decompress from workout</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section quick-wins">
+        <div class="section-title">⚡ Quick Evening Wins</div>
+        
+        <div class="task">
+            <input type="checkbox" id="andrew" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Text Andrew about week plans</div>
+                <div class="task-details">5 min — Coordinate date night plans</div>
+            </div>
+        </div>
+        
+        <div class="task">
+            <input type="checkbox" id="clothes" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Set out clothes for tomorrow</div>
+                <div class="task-details">5 min — Tuesday billing day prep</div>
+            </div>
+        </div>
+        
+        <div class="task">
+            <input type="checkbox" id="weather" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Check tomorrow's weather</div>
+                <div class="task-details">2 min — Plan Tuesday outfit</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% Complete</div>
+    </div>
+
+    <div class="footer">
+        ☁️ <strong>CLOUD SYNC ACTIVE!</strong> Your progress syncs through the cloud to Canyon Agent for smart morning briefings.
+    </div>
+
+    <script>
+        let connectionWorking = false;
+        
+        function updateConnectionStatus(working, method) {
+            const status = document.getElementById('connectionStatus');
+            if (working) {
+                status.innerHTML = `✅ Cloud sync active via ${method}`;
+                status.style.background = '#e8f6f3';
+                status.style.borderColor = '#1abc9c';
+            } else {
+                status.innerHTML = `⚠️ Cloud sync unavailable, progress saves locally`;
+                status.style.background = '#fef9e7';
+                status.style.borderColor = '#f1c40f';
+            }
+        }
+        
+        function sendProgressToCloud(data) {
+            try {
+                // Send to cloud webhook that Canyon Agent monitors
+                fetch('https://webhook.site/764885bf-521a-40e8-b59b-65e5a693fb91', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'User-Agent': 'HaleyScheduleApp/1.0'
+                    },
+                    body: JSON.stringify({
+                        source: 'haley-schedule',
+                        timestamp: new Date().toISOString(),
+                        ...data
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        connectionWorking = true;
+                        updateConnectionStatus(true, 'Cloud Webhook');
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                }).catch(error => {
+                    console.log('Cloud sync failed:', error);
+                    connectionWorking = false;
+                    updateConnectionStatus(false, 'none');
+                });
+                
+            } catch (error) {
+                console.log('Cloud sync error:', error);
+                connectionWorking = false;
+                updateConnectionStatus(false, 'none');
+            }
+        }
+        
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+            const percentage = Math.round((checked.length / checkboxes.length) * 100);
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '% Complete';
+            
+            // Visual feedback
+            checkboxes.forEach(cb => {
+                const task = cb.closest('.task');
+                if (cb.checked) {
+                    task.classList.add('completed');
+                } else {
+                    task.classList.remove('completed');
+                }
+            });
+            
+            // Save progress locally
+            const progress = {};
+            checkboxes.forEach(cb => progress[cb.id] = cb.checked);
+            localStorage.setItem('haley-schedule-progress', JSON.stringify(progress));
+            
+            // Send to Canyon Agent via cloud
+            sendProgressToCloud({
+                date: '2026-02-16',
+                tasks: progress,
+                percentage: percentage,
+                userAgent: navigator.userAgent,
+                device: 'mobile'
+            });
+        }
+        
+        // Load saved progress
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('haley-schedule-progress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const cb = document.getElementById(id);
+                    if (cb) {
+                        cb.checked = progress[id];
+                        if (progress[id]) {
+                            cb.closest('.task').classList.add('completed');
+                        }
+                    }
+                });
+                updateProgress();
+            }
+            
+            // Test cloud connectivity
+            setTimeout(() => {
+                if (!connectionWorking) {
+                    updateConnectionStatus(false, 'none');
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
