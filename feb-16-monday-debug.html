@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haley's Schedule — DEBUG VERSION</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            color: #333;
+            line-height: 1.4;
+        }
+        .header { 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            text-align: center; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .header h1 { 
+            margin: 0 0 8px 0; 
+            font-size: 24px; 
+            font-weight: 600;
+        }
+        .header p { 
+            margin: 0; 
+            opacity: 0.9; 
+            font-size: 16px;
+        }
+        .section { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 16px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #ddd;
+        }
+        .must-do { border-left-color: #e74c3c; }
+        .quick-wins { border-left-color: #3498db; }
+        
+        .section-title { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 16px; 
+            color: #2c3e50;
+        }
+        .task { 
+            display: flex; 
+            align-items: flex-start; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #f1f2f3;
+        }
+        .task:last-child { border-bottom: none; }
+        
+        input[type="checkbox"] { 
+            width: 20px; 
+            height: 20px; 
+            margin-right: 12px; 
+            margin-top: 2px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .task-content { flex: 1; }
+        .task-title { 
+            font-weight: 600; 
+            color: #2c3e50; 
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+        .task-details { 
+            font-size: 14px; 
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .progress-bar { 
+            background: #ecf0f1; 
+            height: 12px; 
+            border-radius: 6px; 
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill { 
+            background: linear-gradient(90deg, #2ecc71, #27ae60); 
+            height: 100%; 
+            border-radius: 6px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        .progress-text { 
+            font-size: 16px; 
+            font-weight: 600;
+            color: #2c3e50; 
+            margin-top: 10px;
+        }
+        
+        .completed { 
+            opacity: 0.6; 
+            text-decoration: line-through; 
+        }
+        
+        .status {
+            background: #e8f6f3;
+            border: 2px solid #1abc9c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .debug-log {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .section, .header, .progress-container, .footer { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 DEBUG VERSION</h1>
+        <p>Monday, February 16, 2026 — Debugging Progress Tracking</p>
+    </div>
+
+    <div class="status" id="connectionStatus">
+        🔄 Testing connection methods...
+    </div>
+
+    <div class="debug-log" id="debugLog">
+        Debug log will appear here...
+    </div>
+
+    <div class="section must-do">
+        <div class="section-title">🔴 Test Tasks</div>
+        
+        <div class="task">
+            <input type="checkbox" id="task1" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Test Task 1</div>
+                <div class="task-details">Check this to test progress tracking</div>
+            </div>
+        </div>
+        
+        <div class="task">
+            <input type="checkbox" id="task2" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Test Task 2</div>
+                <div class="task-details">Check this to test progress tracking</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section quick-wins">
+        <div class="section-title">⚡ More Test Tasks</div>
+        
+        <div class="task">
+            <input type="checkbox" id="task3" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Test Task 3</div>
+                <div class="task-details">Another test task</div>
+            </div>
+        </div>
+        
+        <div class="task">
+            <input type="checkbox" id="task4" onchange="updateProgress()">
+            <div class="task-content">
+                <div class="task-title">Test Task 4</div>
+                <div class="task-details">Final test task</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% Complete</div>
+    </div>
+
+    <div class="footer">
+        🔍 <strong>DEBUG MODE ACTIVE</strong> — Testing multiple connection methods to Canyon Agent
+    </div>
+
+    <script>
+        let connectionWorking = false;
+        let debugMessages = [];
+        
+        function addDebugMessage(msg) {
+            debugMessages.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+            if (debugMessages.length > 10) debugMessages.shift();
+            document.getElementById('debugLog').innerHTML = debugMessages.join('<br>');
+        }
+        
+        function updateConnectionStatus(working, method) {
+            const status = document.getElementById('connectionStatus');
+            if (working) {
+                status.innerHTML = `✅ Connected via ${method}`;
+                status.style.background = '#e8f6f3';
+                status.style.borderColor = '#1abc9c';
+                addDebugMessage(`SUCCESS: Connected via ${method}`);
+            } else {
+                status.innerHTML = `⚠️ Connection failed, progress saves locally only`;
+                status.style.background = '#fef9e7';
+                status.style.borderColor = '#f1c40f';
+                addDebugMessage(`FAILED: Connection attempt failed`);
+            }
+        }
+        
+        function sendProgress(data) {
+            addDebugMessage(`Attempting to send: ${data.percentage}% complete`);
+            
+            // Method 1: Image beacon
+            addDebugMessage('Trying Method 1: Image beacon');
+            try {
+                const img = new Image();
+                const params = new URLSearchParams({
+                    date: data.date,
+                    percentage: data.percentage,
+                    tasks: JSON.stringify(data.tasks),
+                    timestamp: new Date().toISOString(),
+                    method: 'image-beacon'
+                });
+                
+                img.onload = function() {
+                    addDebugMessage('Image beacon: SUCCESS (onload triggered)');
+                    connectionWorking = true;
+                    updateConnectionStatus(true, 'Image Beacon');
+                };
+                
+                img.onerror = function() {
+                    addDebugMessage('Image beacon: FAILED (onerror triggered)');
+                    tryMethod2(data);
+                };
+                
+                img.src = `http://192.168.1.77:3000/progress?${params}`;
+                addDebugMessage(`Image beacon URL: ${img.src.substring(0, 100)}...`);
+                
+                // Timeout fallback
+                setTimeout(() => {
+                    if (!connectionWorking) {
+                        addDebugMessage('Image beacon: TIMEOUT (no response in 3s)');
+                        tryMethod2(data);
+                    }
+                }, 3000);
+                
+            } catch (e) {
+                addDebugMessage(`Image beacon exception: ${e.message}`);
+                tryMethod2(data);
+            }
+        }
+        
+        function tryMethod2(data) {
+            addDebugMessage('Trying Method 2: Fetch API');
+            try {
+                fetch(`http://192.168.1.77:3000/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Request-Method': 'POST'
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        method: 'fetch-api',
+                        timestamp: new Date().toISOString()
+                    }),
+                    mode: 'no-cors'
+                }).then(response => {
+                    addDebugMessage(`Fetch API: Response received (status unknown due to no-cors)`);
+                    connectionWorking = true;
+                    updateConnectionStatus(true, 'Fetch API');
+                }).catch(error => {
+                    addDebugMessage(`Fetch API: FAILED - ${error.message}`);
+                    tryMethod3(data);
+                });
+            } catch (e) {
+                addDebugMessage(`Fetch API exception: ${e.message}`);
+                tryMethod3(data);
+            }
+        }
+        
+        function tryMethod3(data) {
+            addDebugMessage('Trying Method 3: XMLHttpRequest');
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://192.168.1.77:3000/progress', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            addDebugMessage('XMLHttpRequest: SUCCESS');
+                            connectionWorking = true;
+                            updateConnectionStatus(true, 'XMLHttpRequest');
+                        } else {
+                            addDebugMessage(`XMLHttpRequest: FAILED (status ${xhr.status})`);
+                            tryMethod4(data);
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    addDebugMessage('XMLHttpRequest: FAILED (onerror)');
+                    tryMethod4(data);
+                };
+                
+                xhr.send(JSON.stringify({
+                    ...data,
+                    method: 'xmlhttprequest',
+                    timestamp: new Date().toISOString()
+                }));
+                
+            } catch (e) {
+                addDebugMessage(`XMLHttpRequest exception: ${e.message}`);
+                tryMethod4(data);
+            }
+        }
+        
+        function tryMethod4(data) {
+            addDebugMessage('Trying Method 4: Script tag injection');
+            try {
+                const script = document.createElement('script');
+                const params = new URLSearchParams({
+                    date: data.date,
+                    percentage: data.percentage,
+                    tasks: JSON.stringify(data.tasks),
+                    timestamp: new Date().toISOString(),
+                    method: 'script-injection',
+                    callback: 'progressCallback'
+                });
+                
+                script.src = `http://192.168.1.77:3000/progress?${params}`;
+                
+                script.onload = function() {
+                    addDebugMessage('Script injection: SUCCESS (onload)');
+                };
+                
+                script.onerror = function() {
+                    addDebugMessage('Script injection: FAILED (onerror)');
+                    addDebugMessage('All methods failed - progress saves locally only');
+                    updateConnectionStatus(false, 'none');
+                };
+                
+                document.head.appendChild(script);
+                setTimeout(() => {
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) {}
+                }, 2000);
+                
+            } catch (e) {
+                addDebugMessage(`Script injection exception: ${e.message}`);
+                addDebugMessage('All methods exhausted');
+                updateConnectionStatus(false, 'none');
+            }
+        }
+        
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+            const percentage = Math.round((checked.length / checkboxes.length) * 100);
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '% Complete';
+            
+            // Visual feedback
+            checkboxes.forEach(cb => {
+                const task = cb.closest('.task');
+                if (cb.checked) {
+                    task.classList.add('completed');
+                } else {
+                    task.classList.remove('completed');
+                }
+            });
+            
+            // Save progress locally
+            const progress = {};
+            checkboxes.forEach(cb => progress[cb.id] = cb.checked);
+            localStorage.setItem('haley-schedule-progress', JSON.stringify(progress));
+            
+            // Send to Canyon Agent using multiple methods
+            sendProgress({
+                date: '2026-02-16',
+                tasks: progress,
+                percentage: percentage
+            });
+        }
+        
+        // Load saved progress
+        window.addEventListener('load', () => {
+            addDebugMessage('Page loaded, initializing...');
+            
+            const saved = localStorage.getItem('haley-schedule-progress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const cb = document.getElementById(id);
+                    if (cb) {
+                        cb.checked = progress[id];
+                        if (progress[id]) {
+                            cb.closest('.task').classList.add('completed');
+                        }
+                    }
+                });
+                updateProgress();
+            }
+            
+            addDebugMessage('Ready to test progress tracking...');
+        });
+        
+        // Callback for JSONP (if needed)
+        window.progressCallback = function(response) {
+            addDebugMessage('JSONP callback received');
+            connectionWorking = true;
+            updateConnectionStatus(true, 'JSONP');
+        };
+    </script>
+</body>
+</html>
