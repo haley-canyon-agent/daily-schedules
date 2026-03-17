@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haley's Planner — Tuesday, March 17, 2026</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .header .date { font-size: 15px; opacity: 0.9; }
+        .header .energy { font-size: 14px; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; }
+
+        .progress-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .progress-bar { background: #e8e8ed; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, #34c759, #30d158); height: 100%; border-radius: 5px; transition: width 0.4s ease; width: 0%; }
+        .progress-text { font-size: 15px; font-weight: 600; color: #1d1d1f; }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border-left: 4px solid #e8e8ed;
+        }
+        .section.must-do { border-left-color: #ff3b30; }
+        .section.quick-wins { border-left-color: #007aff; }
+        .section.carried { border-left-color: #ff9500; }
+        .section.schedule { border-left-color: #5856d6; }
+        .section.reflection { border-left-color: #af52de; }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: #1d1d1f;
+        }
+
+        .task {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        .task:last-child { border-bottom: none; }
+
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #c7c7cc;
+            border-radius: 6px;
+            margin-right: 12px;
+            margin-top: 1px;
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.2s;
+        }
+        input[type="checkbox"]:checked {
+            background: #34c759;
+            border-color: #34c759;
+        }
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .task-content { flex: 1; }
+        .task-title { font-weight: 600; font-size: 15px; color: #1d1d1f; }
+        .task-meta { font-size: 13px; color: #8e8e93; margin-top: 2px; }
+        .task.completed .task-title { text-decoration: line-through; color: #8e8e93; }
+        .task.completed { opacity: 0.5; }
+
+        .category-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .tag-anchor { background: #e0f2f1; color: #00695c; }
+        .tag-clinical { background: #e3f2fd; color: #1565c0; }
+        .tag-fitness { background: #fce4ec; color: #c62828; }
+        .tag-admin { background: #f3e5f5; color: #7b1fa2; }
+        .tag-social { background: #fff3e0; color: #e65100; }
+        .tag-protected { background: #fff8e1; color: #f57f17; }
+
+        .time-block {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #f2f2f7;
+            align-items: flex-start;
+        }
+        .time-block:last-child { border-bottom: none; }
+        .time-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8e8e93;
+            min-width: 70px;
+            padding-top: 2px;
+        }
+        .time-content { flex: 1; }
+        .time-title { font-weight: 600; font-size: 15px; }
+        .time-note { font-size: 13px; color: #8e8e93; font-style: italic; }
+
+        .cf-days { font-size: 12px; color: #ff9500; font-weight: 600; }
+
+        .tomorrow-preview {
+            background: #f2f2f7;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 8px;
+        }
+        .tomorrow-preview h4 { font-size: 14px; margin-bottom: 8px; color: #8e8e93; }
+        .tomorrow-item { font-size: 14px; padding: 3px 0; color: #3a3a3c; }
+
+        .agent-note {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border: 1px solid #667eea30;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #3a3a3c;
+        }
+        .agent-note strong { color: #667eea; }
+
+        .reflection-item { padding: 8px 0; border-bottom: 1px solid #f2f2f7; }
+        .reflection-item:last-child { border-bottom: none; }
+        .reflection-label { font-size: 13px; color: #8e8e93; margin-bottom: 4px; }
+        .reflection-input {
+            width: 100%;
+            border: 1px solid #e8e8ed;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .footer a { color: white; }
+
+        .status-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 13px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .status-ok { color: #34c759; }
+        .status-warn { color: #ff9500; }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 Haley's Daily Planner</h1>
+        <div class="date">Tuesday, March 17, 2026</div>
+        <div class="energy">⚡ MED</div>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+        <span class="status-ok">● Connected</span> — Progress syncs to Canyon Agent
+    </div>
+
+    <div class="progress-card">
+        <div class="progress-text" id="progressText">0 of 14 tasks</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="agent-note">
+        <strong>Agent note:</strong> Billing is priority #1. Block the morning for it before Eric at 1:15. Anya onboarding is 11 days old — delegate to Maddie today.
+    </div>
+
+    <div class="section must-do">
+        <div class="section-title">🔴 Must Do Today</div>
+        <div class="task" id="task-billing-25hrs-notes">
+            <input type="checkbox" id="billing-25hrs-notes" data-category="must_do" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Billing + 25hrs notes <span class="category-tag tag-clinical">Clinical</span></div>
+                <div class="task-meta"></div>
+            </div>
+        </div>
+        <div class="task" id="task-biweekly-payroll-check-gusto-calendar">
+            <input type="checkbox" id="biweekly-payroll-check-gusto-calendar" data-category="must_do" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Biweekly payroll (check Gusto calendar) <span class="category-tag tag-clinical">Clinical</span></div>
+                <div class="task-meta"></div>
+            </div>
+        </div>
+        <div class="task" id="task-delegate-anya-davis-onboarding-to-maddie">
+            <input type="checkbox" id="delegate-anya-davis-onboarding-to-maddie" data-category="must_do" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Delegate Anya Davis onboarding to Maddie <span class="category-tag tag-clinical">Clinical</span></div>
+                <div class="task-meta"></div>
+            </div>
+        </div>
+        <div class="task" id="task-payroll-biweekly">
+            <input type="checkbox" id="payroll-biweekly" data-category="must_do" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Payroll (biweekly) <span class="category-tag tag-admin">Admin</span></div>
+                <div class="task-meta">20 min</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section quick-wins">
+        <div class="section-title">⚡ Quick Wins</div>
+        <div class="task" id="task-check-website">
+            <input type="checkbox" id="check-website" data-category="quick_win" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Check website <span class="category-tag tag-admin">Admin</span></div>
+                <div class="task-meta">10 min</div>
+            </div>
+        </div>
+        <div class="task" id="task-mick-s-attorney-follow-up">
+            <input type="checkbox" id="mick-s-attorney-follow-up" data-category="quick_win" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Mick's attorney follow-up <span class="category-tag tag-admin">Admin</span></div>
+                <div class="task-meta">15 min</div>
+            </div>
+        </div>
+        <div class="task" id="task-pilates-body-rok">
+            <input type="checkbox" id="pilates-body-rok" data-category="quick_win" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Pilates / Body Rok <span class="category-tag tag-fitness">Fitness</span></div>
+                <div class="task-meta">60 min</div>
+            </div>
+        </div>
+        <div class="task" id="task-reply-re-client-profiles">
+            <input type="checkbox" id="reply-re-client-profiles" data-category="quick_win" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Reply: Re: Client Profiles <span class="category-tag tag-admin">Admin</span></div>
+                <div class="task-meta">5 min</div>
+            </div>
+        </div>
+        <div class="task" id="task-reply-re-resume-updated-for-behavior-tec">
+            <input type="checkbox" id="reply-re-resume-updated-for-behavior-tec" data-category="quick_win" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Reply: Re: Resume Updated For Behavior Technician Positio <span class="category-tag tag-admin">Admin</span></div>
+                <div class="task-meta">5 min</div>
+            </div>
+        </div>
+        <div class="task" id="task-reply-draft-welcome-to-canyon-therapy-yo">
+            <input type="checkbox" id="reply-draft-welcome-to-canyon-therapy-yo" data-category="quick_win" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Reply: DRAFT: Welcome to Canyon Therapy — Your Onboarding <span class="category-tag tag-admin">Admin</span></div>
+                <div class="task-meta">5 min</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section carried">
+        <div class="section-title">⚠️ Carried Forward</div>
+        <div class="task" id="task-anya-davis-client-onboarding-docs-intake">
+            <input type="checkbox" id="anya-davis-client-onboarding-docs-intake" data-category="carried" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Anya Davis client onboarding (docs, intake call, DocuSign)</div>
+                <div class="task-meta"><span class="cf-days">11 days</span> — Delegate, do today, or drop?</div>
+            </div>
+        </div>
+        <div class="task" id="task-insurance-follow-up-for-anyas-mom">
+            <input type="checkbox" id="insurance-follow-up-for-anyas-mom" data-category="carried" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Insurance follow-up for Anyas mom</div>
+                <div class="task-meta"><span class="cf-days">6 days</span> — Delegate, do today, or drop?</div>
+            </div>
+        </div>
+        <div class="task" id="task-dewan-nusruth-onboarding-background-chec">
+            <input type="checkbox" id="dewan-nusruth-onboarding-background-chec" data-category="carried" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Dewan Nusruth onboarding (background check + offer letter)</div>
+                <div class="task-meta"><span class="cf-days">12 days</span> — Delegate, do today, or drop?</div>
+            </div>
+        </div>
+        <div class="task" id="task-egg-freezing-research-best-nyc-clinics">
+            <input type="checkbox" id="egg-freezing-research-best-nyc-clinics" data-category="carried" onchange="taskToggle(this)">
+            <div class="task-content">
+                <div class="task-title">Egg freezing research — best NYC clinics</div>
+                <div class="task-meta"><span class="cf-days">3 days</span> — Delegate, do today, or drop?</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section schedule">
+        <div class="section-title">📅 Time-Blocked Schedule</div>
+        <div class="time-block">
+            <div class="time-label">7:00 AM</div>
+            <div class="time-content">
+                <div class="time-title">⚓ Wake + coffee + read briefing <span class="category-tag tag-anchor">Anchor</span></div>
+                
+            </div>
+        </div>
+        <div class="time-block">
+            <div class="time-label">12:00 PM</div>
+            <div class="time-content">
+                <div class="time-title">⚓ Lunch (real meal, away from screens) <span class="category-tag tag-anchor">Anchor</span></div>
+                
+            </div>
+        </div>
+        <div class="time-block">
+            <div class="time-label">1:15 PM</div>
+            <div class="time-content">
+                <div class="time-title">🛡️ Eric (Therapy) <span class="category-tag tag-protected">Protected</span></div>
+                <div class="time-note">PROTECTED — includes pre-therapy transition + post-therapy buffer</div>
+            </div>
+        </div>
+        <div class="time-block">
+            <div class="time-label">6:30 PM</div>
+            <div class="time-content">
+                <div class="time-title">⚓ Dinner <span class="category-tag tag-anchor">Anchor</span></div>
+                
+            </div>
+        </div>
+        <div class="time-block">
+            <div class="time-label">10:00 PM</div>
+            <div class="time-content">
+                <div class="time-title">⚓ Wind down <span class="category-tag tag-anchor">Anchor</span></div>
+                
+            </div>
+        </div>
+        <div class="time-block">
+            <div class="time-label">10:30 PM</div>
+            <div class="time-content">
+                <div class="time-title">⚓ Bedtime <span class="category-tag tag-anchor">Anchor</span></div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="section reflection">
+        <div class="section-title">🌙 End-of-Day Reflection (2 min)</div>
+        <div class="reflection-item">
+            <div class="reflection-label">Anchors hit today?</div>
+            <textarea class="reflection-input" rows="1" placeholder="Which anchors did you stick to?"></textarea>
+        </div>
+        <div class="reflection-item">
+            <div class="reflection-label">Billing status</div>
+            <textarea class="reflection-input" rows="1" placeholder="Where does billing stand?"></textarea>
+        </div>
+        <div class="reflection-item">
+            <div class="reflection-label">Biggest win</div>
+            <textarea class="reflection-input" rows="1" placeholder="What felt good today?"></textarea>
+        </div>
+        <div class="reflection-item">
+            <div class="reflection-label">Energy check</div>
+            <textarea class="reflection-input" rows="1" placeholder="How are you feeling?"></textarea>
+        </div>
+        <div class="tomorrow-preview">
+            <h4>Tomorrow's Top 3</h4>
+            <div class="tomorrow-item">💙 Check remit amounts on ePACES</div>
+            <div class="tomorrow-item">💙 Xavier check-in</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Built by Canyon Agent — March 17, 2026
+    </div>
+
+    <script>
+        const API_BASE = 'http://100.108.208.6:3001';
+        const PLANNER_DATE = '2026-03-17';
+        const TOTAL_TASKS = 14;
+
+        function taskToggle(checkbox) {
+            const task = checkbox.closest('.task');
+            if (checkbox.checked) {
+                task.classList.add('completed');
+            } else {
+                task.classList.remove('completed');
+            }
+            updateProgress();
+            sendUpdate(checkbox.id, checkbox.checked);
+            saveLocal();
+        }
+
+        function updateProgress() {
+            const all = document.querySelectorAll('input[type="checkbox"]');
+            const done = document.querySelectorAll('input[type="checkbox"]:checked');
+            const pct = all.length > 0 ? Math.round((done.length / all.length) * 100) : 0;
+
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = done.length + ' of ' + all.length + ' tasks';
+
+            // Change bar color at milestones
+            const bar = document.getElementById('progressBar');
+            if (pct >= 75) bar.style.background = 'linear-gradient(90deg, #34c759, #30d158)';
+            else if (pct >= 50) bar.style.background = 'linear-gradient(90deg, #007aff, #5ac8fa)';
+            else if (pct >= 25) bar.style.background = 'linear-gradient(90deg, #ff9500, #ffcc02)';
+
+            return pct;
+        }
+
+        function sendUpdate(taskId, completed) {
+            const all = document.querySelectorAll('input[type="checkbox"]');
+            const done = document.querySelectorAll('input[type="checkbox"]:checked');
+            const pct = all.length > 0 ? Math.round((done.length / all.length) * 100) : 0;
+
+            fetch(API_BASE + '/api/planner-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    taskId: taskId,
+                    completed: completed,
+                    timestamp: new Date().toISOString(),
+                    percentage: pct,
+                    date: PLANNER_DATE,
+                    category: document.getElementById(taskId)?.dataset.category || 'unknown'
+                })
+            }).then(r => {
+                if (r.ok) {
+                    document.getElementById('statusBar').innerHTML = '<span class="status-ok">● Synced</span> — Last update: ' + new Date().toLocaleTimeString();
+                } else {
+                    throw new Error('API error');
+                }
+            }).catch(e => {
+                document.getElementById('statusBar').innerHTML = '<span class="status-warn">● Offline</span> — Progress saved locally';
+            });
+        }
+
+        function saveLocal() {
+            const progress = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                progress[cb.id] = cb.checked;
+            });
+            localStorage.setItem('planner-' + PLANNER_DATE, JSON.stringify(progress));
+        }
+
+        function loadLocal() {
+            const saved = localStorage.getItem('planner-' + PLANNER_DATE);
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const cb = document.getElementById(id);
+                    if (cb) {
+                        cb.checked = progress[id];
+                        if (progress[id]) {
+                            cb.closest('.task').classList.add('completed');
+                        }
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        // Init
+        window.addEventListener('load', () => {
+            loadLocal();
+            // Test API connectivity
+            fetch(API_BASE + '/api/planner-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ taskId: '_ping', completed: false, timestamp: new Date().toISOString(), percentage: 0, date: PLANNER_DATE })
+            }).then(r => {
+                if (r.ok) document.getElementById('statusBar').innerHTML = '<span class="status-ok">● Connected</span> — Progress syncs to Canyon Agent';
+                else throw new Error();
+            }).catch(() => {
+                document.getElementById('statusBar').innerHTML = '<span class="status-warn">● Offline</span> — Progress saved locally';
+            });
+        });
+    </script>
+</body>
+</html>
